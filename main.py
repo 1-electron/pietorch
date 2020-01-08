@@ -7,6 +7,10 @@ import torch.nn.functional as F
 import numpy as np
 from model import Net
 
+# check for gpu
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print("device: ", device)
+
 # define a transformation pipeline for our raw data
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
@@ -19,7 +23,7 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
 
 # instantiate a model according to that architecture
 print("instantiating model...")
-net = Net()
+net = Net().to(device)  # send it to gpu
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -29,7 +33,9 @@ n_epochs = 10
 print("training")
 for epoch in range(n_epochs):
 
-    for batch_idx, (X, y) in enumerate(trainloader):
+    for batch_idx, data in enumerate(trainloader):
+
+        X, y = data[0].to(device), data[1].to(device)  # need to send data to gpu too, not just the model
 
         optimizer.zero_grad()  # clean up gradients
         outputs = net(X)  # emit class logits
