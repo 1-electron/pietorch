@@ -28,7 +28,8 @@ class Net(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * 5 * 5, 120)
         self.fc2 = LinearLayer(120, 84)  # lets use our custom layer
-        self.fc3 = nn.Linear(84, 10)
+        self.fc3 = nn.Linear(84, 32)
+        self.fc4 = nn.Linear(32, 10)
 
     def forward(self, x):
         # think of these as the edges; they are transformations and are therefore stateless
@@ -37,5 +38,6 @@ class Net(nn.Module):
         x = x.view(-1, 16 * 5 * 5)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = self.fc3(x)  # outputs raw logits rather than class probabilities
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)  # outputs raw logits rather than class probabilities
         return x
