@@ -28,7 +28,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 
-n_epochs = 10
+n_epochs = 1
 
 print("training")
 for epoch in range(n_epochs):
@@ -54,9 +54,13 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=500, shuffle=True)
 
 print("testing")
 net.eval()
-for (X, y) in testloader:
-    correct = 0
+for data in testloader:
+    
+    X, y = data[0].to(device), data[1].to(device)
+    
     output = net(X)
     pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+
+    correct = 0
     correct += pred.eq(y.view_as(pred)).sum().item()
     print(correct / len(X))
