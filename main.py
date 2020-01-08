@@ -28,7 +28,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 
-n_epochs = 1
+n_epochs = 100
 
 print("training")
 for epoch in range(n_epochs):
