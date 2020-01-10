@@ -26,13 +26,13 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=500, shuffle=True)
 
 # fetch resnet 18
 print(">> building model")
+num_classes = 10  # cifar10 has 10 classes
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
+model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
 model_ft = model_ft.to(device)    # send it to gpu
 
-num_classes = 10  # cifar10 has 10 classes
-model_ft.fc = nn.Linear(num_ftrs, num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer_ft = optim.SGD(model_ft.parameters(), lr=1e-3, momentum=0.9)
 
