@@ -21,7 +21,7 @@ trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 
 # then construct a generator from the transformed data
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=128, shuffle=True)
 testloader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=True)
 
 # fetch resnet 18
@@ -31,7 +31,7 @@ model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
 model_ft.fc = nn.Linear(num_ftrs, num_classes)
 
-model_ft = model_ft.to(device)    # send it to gpu
+model_ft = model_ft.to(device)    # send model to gpu after modifying fc layer, not before
 
 criterion = nn.CrossEntropyLoss()
 optimizer_ft = optim.SGD(model_ft.parameters(), lr=1e-3, momentum=0.9)
@@ -71,7 +71,10 @@ for epoch in range(n_epochs):
         preds = output.argmax(dim=1, keepdim=False)  # get predictions from argmax
         running_corrects += torch.sum(preds == y)
     epoch_acc = running_corrects.double() / len(testset)
-    print("accuracy", epoch_acc.item())
+    print("accuracy: %.3f" % epoch_acc.item())
 
     time_elapsed = time.time() - start
     print("epoch run time", time_elapsed)
+
+print(">> saving model")
+torch.save(model_ft.state_dict(), "model1.pt")
