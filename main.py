@@ -26,8 +26,11 @@ testloader = torch.utils.data.DataLoader(testset, batch_size=500, shuffle=True)
 
 # fetch resnet 18
 print(">> building model")
-model_ft = models.resnet18(pretrained=True).to(device)  # send it to gpu
+model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
+
+model_ft = model_ft.to(device)    # send it to gpu
+
 num_classes = 10  # cifar10 has 10 classes
 model_ft.fc = nn.Linear(num_ftrs, num_classes)
 criterion = nn.CrossEntropyLoss()
@@ -62,6 +65,7 @@ for epoch in range(n_epochs):
     model_ft.eval()
     running_corrects = 0
     for X, y in testloader:
+        X = X.to(device)
         output = model_ft(X)
         preds = output.argmax(dim=1, keepdim=False)  # get predictions from argmax
         running_corrects += torch.sum(preds == y)
