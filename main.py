@@ -66,6 +66,7 @@ for epoch in range(n_epochs):
     running_corrects = 0
     for X, y in testloader:
         X = X.to(device)
+        y = y.to(device)
         output = model_ft(X)
         preds = output.argmax(dim=1, keepdim=False)  # get predictions from argmax
         running_corrects += torch.sum(preds == y)
