@@ -21,8 +21,8 @@ trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 
 # then construct a generator from the transformed data
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=32, shuffle=True)
-testloader = torch.utils.data.DataLoader(testset, batch_size=500, shuffle=True)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)
+testloader = torch.utils.data.DataLoader(testset, batch_size=128, shuffle=True)
 
 # fetch resnet 18
 print(">> building model")
