@@ -42,18 +42,18 @@ class _Adder(object):
         return [self.df_dx(self.x, self.y), self.df_dy(self.x, self.y)]
 
 
-class MULTIPLY(object):
+class Multiply(object):
     def __new__(self, x, y):
         """
         x and y are Tensor objects.
         """
 
-        op = _MULTIPLIER(x, y)
+        op = _Multiplier(x, y)
         name = "Multiply"
         return Tensor(val=op.evaluate(), parents=[x, y], 
                       op=op, terminal=False, name=name)
         
-class _MULTIPLIER(object):
+class _Multiplier(object):
     def __init__(self, x, y):
         self.x = float(x.val)
         self.y = float(y.val)
