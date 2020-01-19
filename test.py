@@ -1,5 +1,5 @@
 import unittest
-from nn import Tensor, Add, Multiply
+from nn import Tensor, Add, Multiply, Module, Relu, Pow
 
 class Test_PieTorch(unittest.TestCase):
 
@@ -9,6 +9,8 @@ class Test_PieTorch(unittest.TestCase):
         self.Q = Add(self.X, self.Y)
         self.Z = Tensor(val=-4, name="Z")
         self.F = Multiply(self.Q, self.Z)
+
+        
 
     def test_forward_pass(self):
         """
@@ -21,6 +23,19 @@ class Test_PieTorch(unittest.TestCase):
         self.assertEqual(self.X.accumulated_grad, -4.0)
         self.assertEqual(self.Y.accumulated_grad, -4.0)
         self.assertEqual(self.Z.accumulated_grad, 3.0)
+
+    def test_module(self):
+        
+        class Net(Module):
+            def __init__(self):
+                super(Net, self).__init__() 
+                
+            def forward(self, x):
+                x = Pow(x, 2)
+                return Relu(x)
+
+        model = Net()
+        self.assertEqual(model(3).val, 9.0)
 
 if __name__ == "__main__":
     unittest.main()
