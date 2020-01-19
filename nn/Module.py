@@ -1,3 +1,5 @@
+from .Tensor import Tensor
+
 class Module(object):
     def __init__(self):
         pass

@@ -26,7 +26,7 @@ class Tensor(object):
         self.grad = None  # the value of its own gradient wrt its child
         self.accumulated_grad = None  # accumulated gradient wrt root
         self.name = name
-        self.op = op  # op contains context eg parents
+        self.op = op  # op contains context
         self.terminal = terminal
 
         self.color = "White"  # used for dfs
@@ -170,3 +170,19 @@ class Tensor(object):
         called by optimizer.
         """
         self.val = self.val + self.accumulated_grad
+
+    
+    def __call__(self, pred, y):
+        """
+        make loss tensor callable
+        """
+        if self.name is "Loss":
+            # connect loss tensor with the output tensor
+            self.parents.append(pred)
+            pred.children.append(self)
+
+            # then compute loss
+            self.val = self.op._compute_loss(pred, y)
+            return self.val
+        else:
+            raise NotImplementedError
