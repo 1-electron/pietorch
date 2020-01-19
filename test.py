@@ -1,6 +1,5 @@
 import unittest
-from Tensor import Tensor
-from Op import Add, Multiply
+from nn import Tensor, Add, Multiply
 
 class Test_PieTorch(unittest.TestCase):
 

@@ -2,7 +2,6 @@ import autograd.numpy as np
 from autograd import grad, elementwise_grad
 from Tensor import Tensor
 
-
 class Pow(object):
     def __new__(self, x, y):
         op = _Power(x, y)
