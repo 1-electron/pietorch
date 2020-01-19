@@ -25,7 +25,6 @@ class Test_PieTorch(unittest.TestCase):
         self.assertEqual(self.Z.accumulated_grad, 3.0)
 
     def test_module(self):
-        
         class Net(Module):
             def __init__(self):
                 super(Net, self).__init__() 
