@@ -4,10 +4,16 @@ from .Tensor import Tensor
 
 class Pow(object):
     def __new__(self, x, y):
+
+        # cast to Tensor; everything is a Tensor
+        if type(x) is not Tensor:
+            x = Tensor(val=x)
+
         op = _Power(x, y)
         name = "Power"
-        return Tensor(val=op.evaluate(), parents=[x], 
-                      op=op, terminal=False, name=name)
+        return Tensor(val=op.evaluate(), parents=[x], op=op, terminal=False, 
+            name=name)
+        
         
 class _Power(object):
     def __init__(self, x, y):

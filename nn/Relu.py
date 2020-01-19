@@ -4,10 +4,14 @@ from .Tensor import Tensor
 
 class Relu(object):
     def __new__(self, x):
+
+        if type(x) is not Tensor:
+            x = Tensor(val=x)
+
         op = _Relu(x)
         name = "Relu"
-        return Tensor(val=op.evaluate(), parents=[x], 
-                      op=op, terminal=False, name=name)
+        return Tensor(val=op.evaluate(), parents=[x], op=op, terminal=False, 
+            name=name)
         
 class _Relu(object):
     def __init__(self, x):
