@@ -43,8 +43,8 @@ class Test_PieTorch(unittest.TestCase):
     def test_loss(self):
         output = self.model(0)
         criterion = Loss()
-        loss_ = criterion(output, output)
-        self.assertEqual(loss_, 0)
+        loss = criterion(output, output)
+        self.assertEqual(loss.val, 0)
 
 if __name__ == "__main__":
     unittest.main()
