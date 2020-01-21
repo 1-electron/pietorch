@@ -11,7 +11,7 @@ bookkeeping is important because backprogation starts at a leaf node, and the
 actual gradient for an update (dLoss/dX) must be accumulated by traversing 
 through its children.
 
-a Tensor's gradient is wrt its child. if F = Q + Z, then tensor Q's gradient is
+a Tensor's gradient is wrt its child. if F = Q + Z, then Q.grad is
 dF/dQ. ie to increase F, update Q by df/dQ.
 """
 
@@ -22,8 +22,8 @@ class Tensor(object):
         self.val = float(val)
         self.parents = parents  # eg C = A + B, then A and B are C's parents
         self.children = []  # eg C = A + B, then C is A's and B's child 
-        self.forward = forward  # forward function
-        self.grad = None  # the value of its own gradient wrt its child
+        self.forward = forward
+        self.grad = None  # # eg C = A + B, then A.grad is dC/dA
         self.accumulated_grad = None  # accumulated gradient wrt root
         self.name = name
         self.op = op  # op contains context
@@ -62,7 +62,42 @@ class Tensor(object):
         self.color = "Gray"
         self.stack.append(self)
         self._dfs()
-        
+
+        # step 3: reset by marking every node in computational graph "white"
+        print("stack length", len(self.stack))
+        self.stack.append(self)
+        self._mark_tensors_white()
+
+    def _mark_tensors_white(self):
+        """
+        after _dfs is called, tensors will be marked "gray" or "black". we want to
+        reset them by marking them "white".
+        """
+        while len(self.stack) > 0:
+            curr_T = self.stack[-1]
+            ls_unvisited_parents = [p for p in curr_T.parents if p.color is not "White"]
+
+            if len(ls_unvisited_parents) == 0:
+                curr_T.color = "White"
+                self.stack.pop()
+
+            if len(ls_unvisited_parents) > 0:
+
+                # look at one of its parents
+                next_T = ls_unvisited_parents[0]
+                
+                # scenario 2a: the parent is terminal
+                if next_T.terminal:
+                    
+                    # mark terminal "white", no need to add to the stack since we wont do anything else with this tensor
+                    next_T.color = "White"
+                
+                # scenario 2b: the parent is not a leaf...
+                else:
+                    # ... so we add to stack and keep moving
+                    next_T.color = "White"
+                    self.stack.append(next_T)
+
 
     def _dfs(self):
         """
@@ -76,7 +111,6 @@ class Tensor(object):
             
             # inspect the most recent Tensor in the stack
             curr_T = self.stack[-1]
-            print(curr_T.name, curr_T.grad)
             
             # for that Tensor, find its unvisited parents
             ls_unvisited_parents = [p for p in curr_T.parents if p.color is "White"]
