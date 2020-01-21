@@ -75,7 +75,8 @@ class Tensor(object):
         while len(self.stack) > 0:
             
             # inspect the most recent Tensor in the stack
-            curr_T = self.stack[-1]  
+            curr_T = self.stack[-1]
+            print(curr_T.name, curr_T.grad)
             
             # for that Tensor, find its unvisited parents
             ls_unvisited_parents = [p for p in curr_T.parents if p.color is "White"]
@@ -145,7 +146,7 @@ class Tensor(object):
         placed on B.
         """
 
-        # guard condition: if we're at a node that doenst have children, then
+        # guard condition: if we're at a tensor that doenst have children, then
         # set its grad to 1 otherwise chain rule will zero out
         if len(self.children) == 0:
             self.grad = 1
@@ -153,9 +154,11 @@ class Tensor(object):
         # base case: leaf Tensor
         if self.terminal:
             pass
+        
+
         else:
             # eg if C = A + B, then return dC/dA and dC/dB when at Tensor C
-            ls_gradients = self.op.compute_parents_grads()
+            ls_gradients = self.op.compute_parents_grads()  # gradients of parents wrt curr tensor
             
             # then, place dC/dA on A and dC/dB on B
             for i in range(len(self.parents)):
