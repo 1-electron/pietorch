@@ -5,7 +5,7 @@ from .Tensor import Tensor
 class Loss(object):
     def __init__(self):
         self.op = _Loss()
-        self.t = Tensor(name="Loss", op=self.op)
+        self.t = Tensor(name="Loss", op=self.op, terminal=False)
 
     def __call__(self, output, y):
         """

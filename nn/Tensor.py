@@ -1,3 +1,5 @@
+
+
 """
 everything in PieTorch is a Tensor object.
 
@@ -16,8 +18,8 @@ dF/dQ. ie to increase F, update Q by df/dQ.
 """
 
 class Tensor(object):
-    def __init__(self, val=0, parents=[], forward=None, 
-                 name=None, op=None, terminal=True):
+    def __init__(self, terminal=True, val=0, parents=[], forward=None, 
+                 name=None, op=None):
         
         self.val = float(val)
         self.parents = parents  # eg C = A + B, then A and B are C's parents
@@ -49,24 +51,51 @@ class Tensor(object):
         """
         backward method accomplishes two tasks.
         
-        first, it recursively updates Tensors with its respective gradient.
-        
+        first, it recursively computes gradient for each tensor in its ancestry.
+
         then, it prints the trace from a leaf to the root Tensor. (the
         root Tensor is the caller, eg Loss.backward().)
         """
         
-        # step 1: recursively compute gradients; gradients not accumulated
-        self._compute_grad()
+        # step 1: populate every tensor with its gradient
+        self._compute_grad(self)
+        self.grad = 1  # dF/dF = 1
         
-        # step 2: construct depth first search tree
+        # step 2: accumulate gradients using dfs
         self.color = "Gray"
         self.stack.append(self)
         self._dfs()
 
-        # step 3: reset by marking every node in computational graph "white"
-        print("stack length", len(self.stack))
+        # step 3: reset every tensor by marking it "white"
         self.stack.append(self)
         self._mark_tensors_white()
+
+
+    def _compute_grad(self, T):
+        """
+        _compute_grad is a wrapper around each Tensor's op's compute_parents_grads()
+        method.
+
+        let T = A + B. calling T._compute_grad() returns dC/dA and dC/dB. 
+        in the subsequent step, dC/dA is placed on A and dC/dB is placed on B.
+        """
+
+        # base case: leaf Tensor
+        if T.terminal:
+            pass
+        
+        else:
+            # eg if C = A + B, then Tensor C._compute_grad returns [dC/dA, dC/dB]
+            ls_gradients = T.op.compute_parents_grads()  # gradients of parents wrt curr tensor
+            
+            # then, place dC/dA on A and dC/dB on B
+            print(">>>>", T.name, T.parents)
+            for i in range(len(T.parents)):
+                T.parents[i].grad = ls_gradients[i]
+                
+            # recursively call _compute_grad() on its parent
+            for parent in T.parents:
+                self._compute_grad(parent)
 
     def _mark_tensors_white(self):
         """
@@ -173,34 +202,6 @@ class Tensor(object):
         print("-"*20)
     
 
-    def _compute_grad(self):
-        """
-        let C = A + B. calling _compute_grad() on Tensor C returns dC/dA and
-        dC/dB. in the subsequent step, dC/dA is placed on C and dC/dB is 
-        placed on B.
-        """
-
-        # guard condition: if we're at a tensor that doenst have children, then
-        # set its grad to 1 otherwise chain rule will zero out
-        if len(self.children) == 0:
-            self.grad = 1
-        
-        # base case: leaf Tensor
-        if self.terminal:
-            pass
-        
-
-        else:
-            # eg if C = A + B, then return dC/dA and dC/dB when at Tensor C
-            ls_gradients = self.op.compute_parents_grads()  # gradients of parents wrt curr tensor
-            
-            # then, place dC/dA on A and dC/dB on B
-            for i in range(len(self.parents)):
-                self.parents[i].grad = ls_gradients[i]
-                
-            # recursively call _compute_grad() on its parent
-            for T in self.parents:
-                T._compute_grad()
                 
     def update_val_by_accumulated_gradient(self):
         """

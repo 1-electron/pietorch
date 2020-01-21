@@ -15,11 +15,11 @@ class Net(Module):
 def run():
     model = Net()
     output = model(3)
-    output.parents
-    output.val
     criterion = Loss()
-    loss = criterion(output, output)
+    loss = criterion(output, model.X)
     loss.backward()
+
+    print(loss.grad, model.F.grad, model.Q.grad, model.Z.grad, model.X.grad, model.Y.grad)
 
 if __name__ == "__main__":
     run()
