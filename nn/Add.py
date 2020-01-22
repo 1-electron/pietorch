@@ -9,6 +9,13 @@ then returned to caller.
 """
 class Add(object):
     def __new__(self, x, y):  # https://stackoverflow.com/questions/53485171/how-to-return-objects-straight-after-instantiating-classes-in-python
+
+        # in case we need to pass ints or floats
+        if isinstance(x, Tensor) is False:
+            x = Tensor(val=x, name="input")
+        if isinstance(y, Tensor) is False:
+            y = Tensor(val=y, name="input")
+
         op = _Adder(x, y)
         name = "Add"
         return Tensor(val=op.evaluate(), parents=[x, y], op=op, terminal=False, 

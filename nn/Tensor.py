@@ -89,7 +89,6 @@ class Tensor(object):
             ls_gradients = T.op.compute_parents_grads()  # gradients of parents wrt curr tensor
             
             # then, place dC/dA on A and dC/dB on B
-            print(">>>>", T.name, T.parents)
             for i in range(len(T.parents)):
                 T.parents[i].grad = ls_gradients[i]
                 

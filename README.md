@@ -14,19 +14,21 @@ X.grad  # gradient is 2x = 20
 ```
 a more realistic example.
 ```python
-from nn import Tensor, Add, Multiply, Pow, Relu, Module, Loss
+from nn import Tensor, Add, Multiply, Pow, Relu, Module, Loss, Optimizer
 
 class Net(Module):
     def __init__(self):
         super(Net, self).__init__() 
-        self.X = Tensor(val=-2, name="X")
         self.Y = Tensor(val=5, name="Y")
         self.Z = Tensor(val=-4, name="Z")
         
     def forward(self, x):
-        self.Q = Add(self.X, self.Y)
-        self.F = Multiply(self.Q, self.Z)
-        return self.F
+        q = Add(x, self.Y)
+        y = Relu(q)
+        f = Multiply(y, self.Z)
+        return f
 
 model = Net()
+output = model(-2)
+output.val  # prints -12.0
 ```
