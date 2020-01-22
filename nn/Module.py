@@ -10,7 +10,7 @@ class Module(object):
     
     def __call__(self, x):
         # call Module object as if it's a function
-        return self.forward(x)
+        return self.forward(x)  # calls child's forward(), which must be implemented
     
     def parameters(self):
         """
@@ -21,5 +21,5 @@ class Module(object):
         attrs = [getattr(self, T) for T in dir(self) if type(getattr(self, T)) is Tensor]
         
         # then, filter for terminal tensors
-        ls_weights = list(filter(lambda x: x.terminal is True, attrs))
+        ls_weights = list(filter(lambda T: T.terminal is True, attrs))
         return ls_weights

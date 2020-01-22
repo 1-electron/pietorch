@@ -1,5 +1,5 @@
 import unittest
-from nn import Tensor, Add, Multiply, Module, Relu, Pow, Loss
+from nn import Tensor, Add, Multiply, Module, Relu, Pow, Loss, Optimizer
 
 class Test_PieTorch(unittest.TestCase):
 
@@ -42,11 +42,18 @@ class Test_PieTorch(unittest.TestCase):
 
     def test_loss(self):
         output = self.model(0)
+        self.assertEqual(output.val, -12.0)  # first feedforward
+
         criterion = Loss()
         loss = criterion(output, self.model.X)
-        self.assertEqual(loss.val, -10.0)
+        self.assertEqual(loss.val, -10.0)  # check loss
 
-    
+        loss.backward()
+        optimizer = Optimizer(self.model.parameters(), learning_rate=1)
+        optimizer.step()
+        output = self.model(0)  # second feedforward
+        self.assertEqual(output.val, -77.0)
+
 
 if __name__ == "__main__":
     unittest.main()
