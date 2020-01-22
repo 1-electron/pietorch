@@ -203,8 +203,8 @@ class Tensor(object):
     
 
                 
-    def update_val_by_accumulated_gradient(self):
+    def update_val_by_accumulated_gradient(self, learning_rate):
         """
         called by optimizer.
         """
-        self.val = self.val + self.accumulated_grad
+        self.val = self.val - (learning_rate * self.accumulated_grad)
