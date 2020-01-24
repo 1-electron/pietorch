@@ -1,15 +1,15 @@
 class Optimizer(object):
-	"""an optimizer exhaustively updates any leaf tensors by their respective
-	accumulated gradients.
+    """an optimizer exhaustively updates any leaf tensors by their respective
+    accumulated gradients.
 
-	parameters
-	----------
-	observed_params : list of tensors
-		an optimizer object will inspect each tensor. if the tensor is a 
-		terminal tensor, then the optimizer will update the tensor's value by
-		its corresponding gradient. if the tensor is not a terminal tensor - ie
-		it has parents (eg Add tensor) - then it is ignored my the optimizer.
-	"""
+    parameters
+    ----------
+    observed_params : list of tensors
+        an optimizer object will inspect each tensor. if the tensor is a 
+        terminal tensor, then the optimizer will update the tensor's value by
+        its corresponding gradient. if the tensor is not a terminal tensor - ie
+        it has parents (eg Add tensor) - then it is ignored my the optimizer.
+    """
     
     def __init__(self, observed_params, learning_rate=0.001):
         self.observed_params = observed_params

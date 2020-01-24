@@ -43,6 +43,7 @@ class Loss(object):
             self.instantiated = True  # by setting to True, loss object will not be able to update parents or children
         return self.t
 
+
 class _Loss(object):
     def __init__(self):
         self.x = None

@@ -31,4 +31,21 @@ class Net(Module):
 model = Net()
 output = model(-2)
 output.val  # prints -12.0
+
+# get data
+data = Tensor(val=-2, name="target")
+target = Tensor(val=5, name="target")
+
+# define loss
+criterion = Loss()
+
+# define optimizer
+optimizer = Optimizer(model.parameters(), learning_rate=1)
+
+for i in range(10):
+    optimizer.zero_grad()
+    output = model(data)
+    loss = criterion(output, target)
+    loss.backward()  # compute gradients
+    optimizer.step()  # backpropagate
 ```

@@ -207,3 +207,8 @@ class Tensor(object):
         called by optimizer.
         """
         self.val = self.val - (learning_rate * self.accumulated_grad)
+
+    def item(self):
+        """included so we can match pytorchs api.
+        """
+        return self.val
