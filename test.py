@@ -1,5 +1,6 @@
+import numpy as np
 import unittest
-from nn import Tensor, Add, Multiply, Module, Relu, Pow, Loss, Optimizer
+from nn import Tensor, Add, Multiply, Module, Relu, Pow, Loss, Optimizer, Matmul
 
 class Test_PieTorch(unittest.TestCase):
 
@@ -54,6 +55,11 @@ class Test_PieTorch(unittest.TestCase):
         output = self.model(0)  # second feedforward
         self.assertEqual(output.val, -77.0)
 
+    def test_matmul(self):
+        x = np.array([1, 3, -5])
+        y = np.array([4, -2, -1])
+        z = Matmul(x, y)
+        self.assertEqual(z.val, 3.0)        
 
 if __name__ == "__main__":
     unittest.main()

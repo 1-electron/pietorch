@@ -21,7 +21,7 @@ class Tensor(object):
     def __init__(self, terminal=True, val=0, parents=[], forward=None, 
                  name=None, op=None):
         
-        self.val = float(val)
+        self.val = val
         self.parents = parents  # eg C = A + B, then A and B are C's parents
         self.children = []  # eg C = A + B, then C is A's and B's child 
         self.forward = forward
