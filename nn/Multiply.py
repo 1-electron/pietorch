@@ -4,9 +4,12 @@ from .Tensor import Tensor
 
 class Multiply(object):
     def __new__(self, x, y):
-        """
-        x and y are Tensor objects.
-        """
+
+        # in case we need to pass ints or floats
+        if isinstance(x, Tensor) is False:
+            x = Tensor(val=x, name="input")
+        if isinstance(y, Tensor) is False:
+            y = Tensor(val=y, name="input")
 
         op = _Multiplier(x, y)
         name = "Multiply"
