@@ -31,7 +31,7 @@ class MSE(object):
 
         # put output tensor in op so we compute dL/dx wrt x, where x=output
         self.op.x = output.val
-        self.op.y = y.val
+        self.op.y = y.val  # we dont really need this since we dont care about dL/dy, ie loss wrt label
         
         # connect loss tensor with the output tensor
         # guard conditions necessary to prevent duplicate appends
@@ -54,8 +54,7 @@ class MSE(object):
 
 class _MSE(object):
     def __init__(self):
-        self.x = None  # floats not tensors
-        self.y = None
+        pass
         
     def evaluate(self):
         pass
@@ -63,7 +62,7 @@ class _MSE(object):
     def f(self, output_val, y_val):
         return (output_val - y_val) ** 2
 
-    def compute_parents_grads(self, x, y):
+    def compute_parents_grads(self):
         """
         x = output
         y = label, we dont need to compute gradients wrt label

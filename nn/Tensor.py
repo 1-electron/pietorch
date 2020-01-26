@@ -59,7 +59,7 @@ class Tensor(object):
         
         # step 1: populate every tensor with its gradient
         self._compute_grad(self)
-        self.grad = 1
+        self.grad = 1  # dL/dL is 1
         
         # step 2: accumulate gradients using dfs
         self.color = "Gray"
