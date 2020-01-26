@@ -59,7 +59,7 @@ class Tensor(object):
         
         # step 1: populate every tensor with its gradient
         self._compute_grad(self)
-        self.grad = 1  # dF/dF = 1
+        self.grad = 1
         
         # step 2: accumulate gradients using dfs
         self.color = "Gray"
@@ -194,11 +194,11 @@ class Tensor(object):
         tensor.accumulated_grad = 1
 
         for t in reversed(self.stack):
-            print(t.name, t.grad)
+            # print(t.name, t.grad)
             tensor.accumulated_grad *= t.grad
 
-        print("accumulated gradient for ", tensor.name, "is ", tensor.accumulated_grad)
-        print("-"*20)
+        # print("accumulated gradient for ", tensor.name, "is ", tensor.accumulated_grad)
+        # print("-"*20)
     
 
                 

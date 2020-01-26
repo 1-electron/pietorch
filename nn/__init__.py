@@ -7,3 +7,4 @@ from .Module import Module
 from .Loss import Loss
 from .Optimizer import Optimizer
 from .Matmul import Matmul
+from .MSE import MSE
