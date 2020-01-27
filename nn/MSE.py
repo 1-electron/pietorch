@@ -23,13 +23,10 @@ class MSE(object):
         if isinstance(y, Tensor) is False:
             y = Tensor(val=y, name="input")
 
-        # compute scalar loss
-        loss_ = (output.val - y.val) ** 2
+        # compute scalar loss and wrap it with a tensor
+        self.t.val = (output.val - y.val) ** 2
 
-        # everything is a tensor so wrap it with a tensor
-        self.t.val = loss_
-
-        # put output tensor in op so we compute dL/dx wrt x, where x=output
+        # we need outputs to compute gradients for 2nd degree polynomials
         self.op.x = output.val
         self.op.y = y.val  # we dont really need this since we dont care about dL/dy, ie loss wrt label
         
