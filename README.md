@@ -1,16 +1,15 @@
 # pietorch
-a python implementation of pytorch. in a nutshell, it is autograd plus graphs.
+an implementation of pytorch from scratch. in a nutshell, it is a computational graph plus autograd.
 
 ## examples
 ```python
-from Tensor import Tensor
-from Op import Pow
+from PieTorch import Tensor, Pow
 
 X = Tensor(val=10, name="X")
 Z = Pow(X, 2)
-Z.val  # 100
+print(Z.val)  # 100
 Z.backward()  # compute gradients
-X.grad  # gradient is 2x = 20
+print(X.grad)  # gradient is 2x = 20
 ```
 a more realistic example.
 ```python

@@ -1,5 +1,3 @@
-
-
 """
 everything in PieTorch is a Tensor object.
 
@@ -30,7 +28,6 @@ class Tensor(object):
         self.name = name
         self.op = op  # op contains context
         self.terminal = terminal
-
         self.color = "White"  # used for dfs
         self.stack = []
         
@@ -51,9 +48,9 @@ class Tensor(object):
         """
         backward method accomplishes two tasks.
         
-        first, it recursively computes gradient for each tensor in its ancestry.
+        first, it recursively computes gradient for all tensor in its ancestry.
 
-        then, it prints the trace from a leaf to the root Tensor. (the
+        then, it prints a trace from a leaf to the root Tensor. (the
         root Tensor is the caller, eg Loss.backward().)
         """
         
@@ -73,7 +70,7 @@ class Tensor(object):
 
     def _compute_grad(self, T):
         """
-        _compute_grad is a wrapper around each Tensor's op's compute_parents_grads()
+        _compute_grad is a wrapper around each Tensor's op's compute_parents_grads() 
         method.
 
         let T = A + B. calling T._compute_grad() returns dC/dA and dC/dB. 
