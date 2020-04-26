@@ -69,7 +69,8 @@ class Tensor(object):
 
 
     def _compute_grad(self, T):
-        """
+        """Populate all parents, grandparents, etc. with their respective computed gradients.
+
         _compute_grad is a wrapper around each Tensor's op's compute_parents_grads() 
         method.
 
@@ -77,19 +78,20 @@ class Tensor(object):
         in the subsequent step, dC/dA is placed on A and dC/dB is placed on B.
         """
 
-        # base case: leaf Tensor
+        # base case: leaf Tensor so there are no more gradients to compute
         if T.terminal:
             pass
         
         else:
-            # eg if C = A + B, then Tensor C._compute_grad returns [dC/dA, dC/dB]
+            # eg if C = A + B, then Tensor C.op..compute_parents_grad returns [dC/dA, dC/dB]
             ls_gradients = T.op.compute_parents_grads()  # gradients of parents wrt curr tensor
             
             # then, place dC/dA on A and dC/dB on B
             for i in range(len(T.parents)):
+                # T.parents is a python list where each element is a Tensor parent
                 T.parents[i].grad = ls_gradients[i]
                 
-            # recursively call _compute_grad() on its parent
+            # recursively call _compute_grad() on each parent
             for parent in T.parents:
                 self._compute_grad(parent)
 
@@ -150,26 +152,25 @@ class Tensor(object):
                 curr_T.color = "Black"
                 self.stack.pop()
             
-            # scenario 2: Tensor has unvisited parents, which means it is an 
-            # op tensor
+            # scenario 2: Tensor has unvisited parents, which means it is an op
             if len(ls_unvisited_parents) > 0:
 
                 # look at one of its parents
                 next_T = ls_unvisited_parents[0]
                 
-                # scenario 2a: the parent is terminal
+                # scenario 2a: its parent is a terminal node
                 if next_T.terminal:
                     
                     # color it black so we dont double count it later on
                     next_T.color = "Black"
 
-                    # add it to the stack for printing
+                    # add its parent to the stack for printing
                     self.stack.append(next_T)
                     
                     # we've found a terminal so we can accumulate gradients
                     self._accumulate_grads(next_T)
                      
-                    # remove tensor from stack
+                    # clean up, remove its parent from stack
                     self.stack.pop()
                 
                 # scenario 2b: the parent is not a leaf...
@@ -184,7 +185,7 @@ class Tensor(object):
         chain rule.
         """
 
-        # guard condition: make sure tensor is a terminal
+        # type check: make sure tensor is a terminal
         if tensor.terminal is False:
             raise Exception('not a terminal tensor')
 
@@ -192,7 +193,7 @@ class Tensor(object):
 
         for t in reversed(self.stack):
             # print(t.name, t.grad)
-            tensor.accumulated_grad *= t.grad
+            tensor.accumulated_grad *= t.grad  # chain rule
 
         # print("accumulated gradient for ", tensor.name, "is ", tensor.accumulated_grad)
         # print("-"*20)

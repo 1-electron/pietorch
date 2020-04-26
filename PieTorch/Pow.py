@@ -38,7 +38,7 @@ class _Power(object):
         return x ** y
 
     def compute_parents_grads(self):
-        # return a list of gradients
+        # return a list of computed gradients
         self.df_dx = elementwise_grad(self.f, 0)
         return [self.df_dx(self.x, self.y)]
 
